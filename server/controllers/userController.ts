@@ -81,7 +81,7 @@ export const createUserProject = async (req: Request, res: Response) => {
 
     // Enhance user prompt
     const promptEnhancedResponse = await openai.chat.completions.create({
-      model: "z-ai/glm-4.5-air:free",
+      model: process.env.MODEL || "tngtech/deepseek-r1t2-chimera:freeS",
       messages: [
         {
           role: "system",
@@ -126,7 +126,7 @@ export const createUserProject = async (req: Request, res: Response) => {
 
     // Generate website code
     const codeGenerationResponse = await openai.chat.completions.create({
-      model: "z-ai/glm-4.5-air:free",
+      model: process.env.MODEL || "tngtech/deepseek-r1t2-chimera:freeS",
       messages: [
         {
           role: "system",
@@ -165,6 +165,22 @@ export const createUserProject = async (req: Request, res: Response) => {
     });
 
     const code = codeGenerationResponse.choices[0].message.content || "";
+    if (!code) {
+      await prisma.conversation.create({
+        data: {
+          role: "assistant",
+          content: "I'm sorry, but I was unable to generate the website code.",
+          projectId: project.id,
+        },
+      });
+
+      await prisma.user.update({
+        where: { id: userId },
+        data: { credits: { increment: 5 } },
+      });
+
+      return;
+    }
 
     // Create version for the project
     const version = await prisma.version.create({
