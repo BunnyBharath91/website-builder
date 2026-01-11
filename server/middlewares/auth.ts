@@ -1,5 +1,6 @@
 import { fromNodeHeaders } from "better-auth/node";
 import { NextFunction, Request, Response } from "express";
+import { auth } from "../lib/auth.js";
 
 export const protect = async (
   req: Request,
