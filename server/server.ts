@@ -12,9 +12,6 @@ const app = express();
 const corsOptions = {
   origin: process.env.TRUSTED_ORIGINS?.split(",") || [],
   credentials: true,
-  // Explicitly allow headers for cookies
-  allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
-  exposedHeaders: ["Set-Cookie"],
 };
 
 app.use(cors(corsOptions));
