@@ -35,7 +35,7 @@ const Home = () => {
 
   return (
     <section className="flex flex-col items-center text-white text-sm pb-20 px-4 font-poppins">
-      <a
+      {/* <a
         href="https://prebuiltui.com"
         className="flex items-center gap-2 border border-slate-700 rounded-full p-1 pr-3 text-sm mt-20"
       >
@@ -61,9 +61,9 @@ const Home = () => {
             />
           </svg>
         </p>
-      </a>
+      </a> */}
 
-      <h1 className="text-center text-[40px] leading-[48px] md:text-6xl md:leading-[70px] mt-4 font-semibold max-w-3xl">
+      <h1 className="text-center text-[40px] leading-[48px] md:text-6xl md:leading-[70px] mt-20 font-semibold max-w-3xl">
         Turn thoughts into websites instantly, with AI.
       </h1>
 
