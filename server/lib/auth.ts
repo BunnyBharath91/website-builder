@@ -4,9 +4,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import prisma from "./prisma.js";
 
 const trustedOrigins = process.env.TRUSTED_ORIGINS?.split(",") || [];
-const isProduction =
-  process.env.VERCEL_ENV === "production" ||
-  process.env.NODE_ENV === "production";
+const isProduction = process.env.NODE_ENV === "production";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
