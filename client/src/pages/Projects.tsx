@@ -19,6 +19,7 @@ import ProjectPreview, {
   type ProjectPreviewRef,
 } from "../components/ProjectPreview";
 import api from "@/configs/axios";
+import { assets } from "@/assets/assets";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 
@@ -132,7 +133,7 @@ const Projects = () => {
         {/* left  */}
         <div className="flex items-center gap-2 sm:min-w-90 text-nowrap">
           <img
-            src="/favicon.png"
+            src={assets.favicon}
             alt="logo"
             className="h-6 cursor-pointer"
             onClick={() => navigate("/")}

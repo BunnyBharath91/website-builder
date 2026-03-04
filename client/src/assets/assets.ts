@@ -1,7 +1,9 @@
 import logo from "./logo.png";
+import favicon from "./favicon.png";
 
 export const assets = {
   logo,
+  favicon,
 };
 
 export const appPlans = [
