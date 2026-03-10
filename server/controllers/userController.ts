@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../lib/prisma.js";
-import openai from "../configs/openai.js";
+import { createChatCompletionWithFallback } from "../configs/openai.js";
 import Stripe from "stripe";
 
 // Get User Credits
@@ -88,9 +88,7 @@ export const createUserProject = async (req: Request, res: Response) => {
     res.json({ projectId: project.id });
 
     // Enhance user prompt
-    const promptEnhanceResponse = await openai.chat.completions.create({
-      model: "stepfun/step-3.5-flash:free",
-      messages: [
+    const promptEnhanceResponse = await createChatCompletionWithFallback([
         {
           role: "system",
           content: `
@@ -110,8 +108,8 @@ export const createUserProject = async (req: Request, res: Response) => {
           role: "user",
           content: initial_prompt,
         },
-      ],
-    });
+      ]
+    );
 
     const enhancedPrompt = promptEnhanceResponse.choices[0].message.content;
 
@@ -132,9 +130,7 @@ export const createUserProject = async (req: Request, res: Response) => {
     });
 
     // Generate website code
-    const codeGenerationResponse = await openai.chat.completions.create({
-      model: "stepfun/step-3.5-flash:free",
-      messages: [
+    const codeGenerationResponse = await createChatCompletionWithFallback([
         {
           role: "system",
           content: `
@@ -167,8 +163,8 @@ export const createUserProject = async (req: Request, res: Response) => {
           role: "user",
           content: enhancedPrompt || "",
         },
-      ],
-    });
+      ]
+    );
 
     const code = codeGenerationResponse.choices[0].message.content || "";
 

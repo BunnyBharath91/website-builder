@@ -28,7 +28,7 @@ A powerful, AI-driven platform that allows users to create and refine websites u
 - **Express 5**: Fast, unopinionated, minimalist web framework for Node.js.
 - **Prisma**: Next-generation ORM for Type-safe database access.
 - **PostgreSQL**: Reliable and powerful relational database.
-- **OpenAI**: Powers the AI revision and code generation engine.
+- **OpenAI / OpenRouter**: Powers the AI revision and code generation engine. OpenAI is the primary provider; OpenRouter is used automatically as a fallback when OpenAI returns 429 (rate limit/quota) or 5xx (server) errors.
 - **Stripe**: Handles secure payments and credit top-ups.
 - **Better Auth**: Comprehensive authentication solution.
 
@@ -87,11 +87,18 @@ website_builder/
 
    ```env
    DATABASE_URL="postgresql://..."
+   BETTER_AUTH_SECRET="your_auth_secret"
+   BETTER_AUTH_URL="http://localhost:3000"
+   TRUSTED_ORIGINS="http://localhost:5173"
+
+   # AI providers: OpenAI is primary; OpenRouter is used only on 429 or 5xx from OpenAI
    OPENAI_API_KEY="your_openai_key"
+   OPENAI_MODEL="gpt-4.1-mini"
+   OPENROUTER_API_KEY="your_openrouter_key"
+   OPENROUTER_MODEL="stepfun/step-3.5-flash:free"
+
    STRIPE_SECRET_KEY="your_stripe_key"
    STRIPE_WEBHOOK_SECRET="your_webhook_secret"
-   BETTER_AUTH_SECRET="your_auth_secret"
-   TRUSTED_ORIGINS="http://localhost:5173"
    ```
 
    **Client `.env`:**

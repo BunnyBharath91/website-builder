@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../lib/prisma.js";
-import openai from "../configs/openai.js";
+import { createChatCompletionWithFallback } from "../configs/openai.js";
 
 // Controller Function to Make Revision
 export const makeRevision = async (req: Request, res: Response) => {
@@ -56,9 +56,7 @@ export const makeRevision = async (req: Request, res: Response) => {
     });
 
     // Enhance user prompt
-    const promptEnhanceResponse = await openai.chat.completions.create({
-      model: "stepfun/step-3.5-flash:free",
-      messages: [
+    const promptEnhanceResponse = await createChatCompletionWithFallback([
         {
           role: "system",
           content: `
@@ -76,8 +74,8 @@ export const makeRevision = async (req: Request, res: Response) => {
           role: "user",
           content: `User's request: "${message}"`,
         },
-      ],
-    });
+      ]
+    );
 
     const enhancedPrompt = promptEnhanceResponse.choices[0].message.content;
 
@@ -97,9 +95,7 @@ export const makeRevision = async (req: Request, res: Response) => {
     });
 
     // Generate website code
-    const codeGenerationResponse = await openai.chat.completions.create({
-      model: "stepfun/step-3.5-flash:free",
-      messages: [
+    const codeGenerationResponse = await createChatCompletionWithFallback([
         {
           role: "system",
           content: `
@@ -120,8 +116,8 @@ export const makeRevision = async (req: Request, res: Response) => {
           content: `
                     Here is the current website code: "${currentProject.current_code}" The user wants this change: "${enhancedPrompt}"`,
         },
-      ],
-    });
+      ]
+    );
 
     const code = codeGenerationResponse.choices[0].message.content || "";
 
