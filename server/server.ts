@@ -6,6 +6,7 @@ import { auth } from "./lib/auth.js";
 import userRouter from "./routes/userRoutes.js";
 import projectRouter from "./routes/projectRoutes.js";
 import { stripeWebhook } from "./controllers/stripeWebhook.js";
+import prisma from "./lib/prisma.js";
 
 const app = express();
 
@@ -34,10 +35,25 @@ app.use("/api/project", projectRouter);
 // Export for Vercel serverless
 export default app;
 
+// Keep NeonDB/PostgreSQL from going idle (runs every 5 min, minimal query)
+const KEEPALIVE_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
+function startDbKeepAlive() {
+  const ping = async () => {
+    try {
+      await prisma.$queryRaw`SELECT 1`;
+    } catch {
+      // Ignore errors - connection will retry on next request
+    }
+  };
+  ping(); // Wake DB immediately if suspended
+  setInterval(ping, KEEPALIVE_INTERVAL_MS);
+}
+
 // Keep listen for local development
 if (process.env.NODE_ENV !== "production") {
   const port = 3000;
   app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
+    startDbKeepAlive();
   });
 }
